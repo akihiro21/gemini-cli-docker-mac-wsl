@@ -25,7 +25,7 @@ brew install docker docker-compose colima
 まずはこのリポジトリをクローンし、空のソースディレクトリに Gemini CLI 本体を配置します。
 
 ```bash
-git clone <YOUR_REPOSITORY_URL> gemini-docker
+git clone https://github.com/akihiro21/gemini-cli-docker-mac-wsl.git gemini-docker
 cd gemini-docker/project/gemini-cli-src
 
 # Gemini CLI 本体をこの中にクローン
