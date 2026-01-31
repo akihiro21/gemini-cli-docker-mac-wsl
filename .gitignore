@@ -1,0 +1,9 @@
+# .gitignore
+.DS_Store
+
+# 設定・認証ディレクトリを無視
+project/.gemini-config/
+
+# gemini-cli-src フォルダ自体は残すが、その中身（隠しファイル・フォルダ含む）をすべて無視
+project/gemini-cli-src/
+!project/gemini-cli-src/.gitkeep

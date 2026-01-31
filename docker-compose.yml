@@ -1,0 +1,10 @@
+services:
+  gemini-env:
+    build: .
+    container_name: gemini-cli-dev
+    volumes:
+      - ./project:/project
+      - ./project/gemini-cli-src:/app/gemini-cli-src
+    network_mode: host
+    tty: true
+    stdin_open: true
