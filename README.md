@@ -1,40 +1,53 @@
-# Gemini CLI - Docker Development Environment
+# Gemini CLI - Multi-Agent Docker Environment
 
-## 注意事項
-⚠️  Geminiを使って作成したコードが含まれます。使用は自己責任でお願いします。
+## 概要
+このプロジェクトは、**Gemini CLI** と **tmux** を活用した、Dockerベースのマルチエージェント並列開発基盤です。
+Apple Silicon (M1/M2/M3 Mac) に最適化されており、隔離された安全な環境で複数のAIエージェントを効率的に並行管理することを目的としています。
 
-M1/M2/M3 Mac (Apple Silicon) に最適化された、Dockerベースの Gemini CLI 開発・実行環境です。
-個人のGoogleアカウントを使用して、安全かつクリーンな隔離環境で AI Agent を利用できます。
+### 🛡️ 注意事項
+⚠️ 本プロジェクトにはGeminiを使用して生成されたコードが含まれています。使用は自己責任でお願いします。
 
-## 📋 前提条件
+---
 
-この環境を動かすために、Mac側に以下のツールをインストールしてください。
+## 🏛️ クレジットとライセンス
 
-- **Homebrew**: パッケージ管理ツール
-- **Colima**: Docker Desktopの代わりに使用する軽量コンテナ実行環境
-- **Docker CLI / Docker Compose**: コンテナ操作用ツール
+本プロジェクトのマルチエージェントシステムの設計思想および実装は、以下の素晴らしいプロジェクトを参考に、Gemini CLI環境へ適応・改変させたものです。
+
+* **ベースプロジェクト:** [multi-agent-shogun](https://github.com/...) (MIT License)
+* **Gemini CLI適応の参考:** [alvis1113/multi-agent-shogun-geminiCLI](https://github.com/alvis1113/multi-agent-shogun-geminiCLI)
+    * 特にGemini CLIにおけるRate Limit対策や、tmux `send-keys` の挙動改善において多大な知見をいただいています。
+
+**ライセンス:** MIT License
+
+---
+
+## 📋 前提条件 (Host Mac)
+
+コンテナを動かすために、以下のツールをインストールしてください。
+
+- **Homebrew**: パッケージ管理
+- **Colima**: 軽量コンテナ実行環境（Docker Desktopの代替）
+- **Docker CLI / Docker Compose**: コンテナ操作
 
 ```bash
-# インストールコマンド例
 brew install docker docker-compose colima
 ```
 
+---
+
 ## 🚀 セットアップ手順
 
-### 1. リポジトリのクローン
-まずはこのリポジトリをクローンし、空のソースディレクトリに Gemini CLI 本体を配置します。
-
+### 1. リポジトリのクローンとソースの配置
 ```bash
-git clone https://github.com/akihiro21/gemini-cli-docker-mac-wsl.git gemini-docker
+git clone [https://github.com/akihiro21/gemini-cli-docker-mac-wsl.git](https://github.com/akihiro21/gemini-cli-docker-mac-wsl.git) gemini-docker
 cd gemini-docker/project/gemini-cli-src
 
-# Gemini CLI 本体をこの中にクローン
-git clone https://github.com/google/gemini-cli.git .
+# Gemini CLI 本体をクローン（ソースディレクトリ内）
+git clone [https://github.com/google/gemini-cli.git](https://github.com/google/gemini-cli.git) .
 ```
 
 ### 2. 環境の起動
-ルートディレクトリにある起動スクリプトを実行します。Colimaの起動からDockerコンテナの立ち上げまで自動で行います。
-
+ルートディレクトリにあるスクリプトを実行すると、Colimaの起動からコンテナ立ち上げまで自動で行われます。
 ```bash
 cd ../../
 chmod +x start-gemini.sh
@@ -42,57 +55,43 @@ chmod +x start-gemini.sh
 ```
 
 ### 3. コンテナ内での初期設定
-コンテナに入ったら、Node.jsの依存パッケージをインストールします。
-
 ```bash
-# コンテナ内で実行
+# コンテナへ入る（自動で入らない場合）
+docker-compose exec gemini-env bash
+
+# 依存パッケージのインストールとビルド
 cd /app/gemini-cli-src
 npm install
-# ビルド
 npm run build
 ```
 
-### 4. ログインと動作確認
-`gemini` コマンドを実行すると、ブラウザが開いてGoogleログインを求められます。
+---
+
+## 🛠 使い方
+
+### マルチエージェントシステムの起動
+コンテナ内のプロジェクトディレクトリにて、以下のスクリプトを実行することでシステムが起動します。
 
 ```bash
-# コンテナ内で実行
-gemini --version
-
-# 実際に質問してみる
-gemini "Hello, Dockerからこんにちは！"
+./multi-agent-start.sh
 ```
 
-## 📁 ディレクトリ構成
+### tmuxのトラブルシューティング（物理的解決策）
+マルチエージェント動作中にtmuxが停止したり、バグが発生したりする場合の対処法です。
 
-- `project/workspace`: 作業用ディレクトリ。解析したいファイルやスクリプトはここに入れます。
-- `project/gemini-cli-src`: Gemini CLI のソースコード。各自で `git clone` してください。
-- `project/.gemini-config`: 認証情報が保存されます。**Git管理外**です。
+* **プロセスの強制停止**: コマンドが応答しない場合は `Ctrl+C` を押してください。
+* **セッションの削除**: tmuxが正常に動作しない場合は、以下のコマンドでセッションを強制終了してください。
+  ```bash
+  # 実行例（セッション名を指定して削除）
+  tmux kill-session -t <セッション名>
+  ```
+* **一括終了**: 全てのtmuxセッションを終了させる場合は以下を実行してください。
+  ```bash
+  tmux kill-server
+  ```
 
-## 🛠 便利な使いかた
-
-### GEMINI.md による権限管理
-`/project/workspace/GEMINI.md` を作成し、以下のように記述すると、Geminiが確認なしで実行できるコマンドを指定できます。
-
-```markdown
-Gemini, you can run these commands without asking:
-- ls
-- cat
-- pwd
-```
-
-### 非対話モード
-確認ダイアログなしで一発実行したい場合は `-p` フラグを使用してください。
-
-```bash
-gemini -p "現在のOSのバージョンを教えて"
-```
+---
 
 ## ❓ 困ったときは
-
-- **コマンドが見つからない場合**: 
-  コンテナ内で `source ~/.bashrc` を実行してパスを再読み込みしてください。
-- **動作が重い・ハングする場合**: 
-  Mac側で `docker-compose restart gemini-env` を実行してコンテナを再起動してください。
-- **Google Cloudの警告が出る場合**: 
-  本環境は個人アカウントのブラウザ認証を利用するため、`gcloud` 関連の警告（Quota Project等）は無視して問題ありません。
+- **コマンドが見つからない**: コンテナ内で `source ~/.bashrc` を実行してください。
+- **動作が重い・ハングする**: Mac側で `docker-compose restart gemini-env` を実行し、コンテナを再起動してください。

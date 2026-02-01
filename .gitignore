@@ -7,3 +7,32 @@ project/.gemini-config/
 # gemini-cli-src フォルダ自体は残すが、その中身（隠しファイル・フォルダ含む）をすべて無視
 project/gemini-cli-src/
 !project/gemini-cli-src/.gitkeep
+
+# Test outputs (generated during testing)
+project/workspace/test_output/
+
+# Generated skills (local development)
+project/workspace/skills/
+
+# Temporary files
+*.tmp
+*.bak
+
+# Runtime data (generated during operation)
+project/workspace/output/
+project/workspace/queue/research/
+project/workspace/queue/tasks/
+project/workspace/queue/reports/
+
+# Project context (local to each installation, except README)
+project/workspace/context/
+!project/workspace/context/README.md
+project/workspace/queue/*.yaml
+project/workspace/dashboard.md
+project/workspace/config/projects.yaml
+project/workspace/status/
+project/workspace/config/settings.yaml
+project/workspace/logs/
+
+# Project details (contains client/confidential info)
+project/workspace/projects/
