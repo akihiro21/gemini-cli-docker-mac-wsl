@@ -5,6 +5,7 @@ services:
     volumes:
       - ./project:/project
       - ./project/gemini-cli-src:/app/gemini-cli-src
+      - ./project/.gemini-config:/home/developer/.gemini
     network_mode: host
     tty: true
     stdin_open: true

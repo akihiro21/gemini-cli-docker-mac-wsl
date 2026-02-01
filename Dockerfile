@@ -23,18 +23,14 @@ RUN useradd -m -s /bin/bash $USERNAME && \
     echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER $USERNAME
 
-# 3. 設定の永続化用リンク作成
-RUN mkdir -p /home/$USERNAME/.config && \
-    ln -s /project/.gemini-config /home/$USERNAME/.gemini-cli
-
-# 4. エイリアス設定
+# 3. エイリアス設定
 RUN echo "alias gemini='node /app/gemini-cli-src/bundle/gemini.js'" >> /home/$USERNAME/.bashrc && \
     echo "alias gemini='node /app/gemini-cli-src/bundle/gemini.js'" >> /home/$USERNAME/.profile
 
 # tmuxでマウスを有効にし、UTF-8を強制する設定
 RUN echo "set -g mouse on" >> /home/$USERNAME/.tmux.conf
 
-# 5. 初期ディレクトリ
+# 4. 初期ディレクトリ
 WORKDIR /project/workspace
 
 CMD ["tail", "-f", "/dev/null"]
