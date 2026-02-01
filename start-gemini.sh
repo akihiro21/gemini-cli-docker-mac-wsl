@@ -1,9 +1,16 @@
 #!/bin/bash
 
-# 1. Colimaが動いていなければ起動
-if ! colima status >/dev/null 2>&1; then
-    echo "Starting Colima..."
-    colima start --cpu 2 --memory 4 --arch arm64
+# OSを判定 (Darwin = macOS)
+OS_TYPE="$(uname)"
+
+# 1. macOSの場合のみColimaの状態を確認・起動
+if [ "$OS_TYPE" == "Darwin" ]; then
+    if ! colima status >/dev/null 2>&1; then
+        echo "Starting Colima (macOS detected)..."
+        colima start --cpu 2 --memory 4 --arch arm64
+    fi
+else
+    echo "Skipping Colima start (Running on $OS_TYPE)..."
 fi
 
 # 2. プロジェクトのコンテナを立ち上げる
