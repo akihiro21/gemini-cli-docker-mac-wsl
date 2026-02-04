@@ -14,6 +14,9 @@ else
 fi
 
 # 2. プロジェクトのコンテナを立ち上げる
+# Macのhomebrewでdocker composeコマンドを使う場合以下を実施
+# mkdir -p ~/.docker/cli-plugins
+# ln -sfn $(brew --prefix)/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
 echo "Launching Docker containers..."
 docker compose up -d
 
