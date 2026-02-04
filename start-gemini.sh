@@ -15,7 +15,7 @@ fi
 
 # 2. プロジェクトのコンテナを立ち上げる
 echo "Launching Docker containers..."
-docker-compose up -d
+docker compose up -d
 
 echo "Gemini-CLI environment is ready!"
 
